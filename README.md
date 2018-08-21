@@ -1,7 +1,7 @@
 # YouTube-Time-Range-Extractor-To-Mp3
 YouTube Time Range Extractor To Mp3 helper class for the Laravel Framework
 
-This helper class is inspired by youtube-dl (https://github.com/rg3/youtube-dl) and implements downloading only specified range of YouTube video and converting it to MP3 file with sound quality compatible with Amazon Echo.
+This helper class is inspired by youtube-dl (https://github.com/rg3/youtube-dl) and extends its functionality by downloading only specified range of YouTube video and converting it to MP3 file with sound quality compatible with Amazon Echo.
 
 macOS users can install `youtube-dl` and `ffmpeg` dependencies with Homebrew
 
