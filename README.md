@@ -10,6 +10,12 @@ brew install youtube-dl
 brew install ffmpeg
 ```
 
+Install this package with composer
+
+```
+composer require norkunas/youtube-dl-php
+```
+
 Sample usage:
 
 ```
