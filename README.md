@@ -20,7 +20,10 @@ $videoData = $extractor->getVideoDuration();
 
 In order to download specified part of the video (ex.: from 10 sec. to 15 sec.) and convert it to MP3, use the code below:
 
-`$extractor->download(10, 15);`
+```
+$extractor->download(10, 15);
+```
 
-The audio file will be stored in `/path_to_your_laravel_project/storage/app/wpudQ75m85uedZ6MHCP0fhI3N0Rmc0miuUHLIpwZ.mp3` 
+The audio file will be stored in `/path_to_your_laravel_project/storage/app/wpudQ75m85uedZ6MHCP0fhI3N0Rmc0miuUHLIpwZ.mp3`.
+
 You can inspect the output of this command for more details.
