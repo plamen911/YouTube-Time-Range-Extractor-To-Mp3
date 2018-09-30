@@ -25,6 +25,9 @@ class YoutubeTimeRangeExtractorToMp3
     /** @var string|null $format */
     private $format;
 
+    /** @var string|null $audioOptions */
+    private $audioOptions;
+
     /** @var string|null $directVideoLink */
     private $directVideoLink;
 
@@ -61,7 +64,8 @@ class YoutubeTimeRangeExtractorToMp3
         }
 
         $this->videoLink = $videoLink;
-		$this->format = 22;
+		$this->format = "22/bestaudio/251";
+		$this->audioOptions = '-b:a 48k -ar 16000';
         $this->directVideoLink = null;
         $this->videoDuration = -1;
         $this->videoData = [];
@@ -90,6 +94,14 @@ class YoutubeTimeRangeExtractorToMp3
     public function setVideoFormat(string $format)
     {
         $this->format = $format;
+    }
+
+    /**
+     * @param null|string $audioOptions
+     */
+    public function setAudioOptions(string $audioOptions)
+    {
+        $this->audioOptions = $audioOptions;
     }
 
     /**
@@ -140,7 +152,7 @@ class YoutubeTimeRangeExtractorToMp3
 		}
 
         // ffmpeg -i $(youtube-dl -f '.$this->format.' --get-url https://www.youtube.com/watch?v=G_4dYKDC5pQ) -ss 10 -to 15 -ac 2 -codec:a libmp3lame -b:a 48k -ar 16000 sample.mp3
-        $process = new Process('ffmpeg -i $(youtube-dl -f '.$this->format.' --get-url ' . $this->videoLink . ') -ss ' . $startTime . ' -to ' . $endTime . ' -ac 2 -codec:a libmp3lame -b:a 48k -ar 16000 ' . $audioFile);
+        $process = new Process('ffmpeg -i $(youtube-dl --cache-dir "' . $this->downloadPath . '/" -f '.$this->format.' --get-url ' . $this->videoLink . ') -ss ' . $startTime . ' -to ' . $endTime . ' -ac 2 -codec:a libmp3lame '.$this->audioOptions.' ' . $audioFile);
         $process->setTimeout($this->timeout);
 
         try {
