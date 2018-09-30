@@ -64,7 +64,7 @@ class YoutubeTimeRangeExtractorToMp3
         }
 
         $this->videoLink = $videoLink;
-		$this->format = "22/bestaudio/251";
+		$this->format = "bestaudio/22/251"; // try bestaudio, then 22, then 251
 		$this->audioOptions = '-b:a 128k'; //-b:a 48k -ar 16000
         $this->directVideoLink = null;
         $this->videoDuration = -1;
