@@ -47,7 +47,7 @@ class YoutubeTimeRangeExtractorToMp3
      * YouTubeVideoRangeExtractor constructor.
      * @param null|string $videoLink
      */
-    public function __construct(?string $videoLink = null)
+    public function __construct(string $videoLink = null)
     {
         if (null === (new ExecutableFinder())->find('youtube-dl')) {
             throw new ExecutableNotFoundException('"youtube-dl" executable was not found. Did you forgot to add it to environment variables?');
@@ -61,14 +61,21 @@ class YoutubeTimeRangeExtractorToMp3
         $this->directVideoLink = null;
         $this->videoDuration = -1;
         $this->videoData = [];
-
-        $this->setDownloadPath(storage_path('app'));
+		if(function_exists("storage_path")) {
+			$this->setDownloadPath(storage_path('app'));
+		} else {
+			$debug = $this->debug;
+			if (is_callable($debug)) {
+				$debug("warning", "Larvel not installed.  Trying to run without it.");
+			}
+			$this->setDownloadPath(__DIR__);
+		}
     }
 
     /**
      * @param null|string $videoLink
      */
-    public function setVideoLink(?string $videoLink): void
+    public function setVideoLink(string $videoLink): void
     {
         $this->videoLink = $videoLink;
     }
