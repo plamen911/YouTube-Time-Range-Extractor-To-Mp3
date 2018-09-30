@@ -75,7 +75,7 @@ class YoutubeTimeRangeExtractorToMp3
     /**
      * @param null|string $videoLink
      */
-    public function setVideoLink(string $videoLink): void
+    public function setVideoLink(string $videoLink): null
     {
         $this->videoLink = $videoLink;
     }
@@ -96,17 +96,17 @@ class YoutubeTimeRangeExtractorToMp3
         return $this->downloadPath;
     }
 
-    public function debug(callable $debug): void
+    public function debug(callable $debug): null
     {
         $this->debug = $debug;
     }
 
-    public function setTimeout(int $timeout): void
+    public function setTimeout(int $timeout): null
     {
         $this->timeout = $timeout;
     }
 
-    public function onProgress(callable $onProgress): void
+    public function onProgress(callable $onProgress): null
     {
         $this->progress = $onProgress;
     }
