@@ -141,7 +141,7 @@ class YoutubeTimeRangeExtractorToMp3
      * @return array
      * @throws \Exception
      */
-    public function download(int $startTime, int $endTime): array
+    public function download(int $startTime = null, int $endTime = null): array
     {
         $this->getVideoData();
 
@@ -152,7 +152,12 @@ class YoutubeTimeRangeExtractorToMp3
 		}
 
         // ffmpeg -i $(youtube-dl -f '.$this->format.' --get-url https://www.youtube.com/watch?v=G_4dYKDC5pQ) -ss 10 -to 15 -ac 2 -codec:a libmp3lame -b:a 48k -ar 16000 sample.mp3
-        $process = new Process('ffmpeg -i $(youtube-dl --cache-dir "' . $this->downloadPath . '/" -f '.$this->format.' --get-url ' . $this->videoLink . ') -ss ' . $startTime . ' -to ' . $endTime . ' -ac 2 -codec:a libmp3lame '.$this->audioOptions.' ' . $audioFile);
+		$processArgs = 'ffmpeg -i $(youtube-dl --cache-dir "' . $this->downloadPath . '/" -f '.$this->format.' --get-url ' . $this->videoLink . ') ';
+		if(!is_null($startTime)&&!is_null($endTime)){
+			$processArgs .= '-ss ' . $startTime . ' -to ' . $endTime; 
+		}
+		$processArgs .= ' -ac 2 -codec:a libmp3lame '.$this->audioOptions.' ' . $audioFile;
+        $process = new Process($processArgs);
         $process->setTimeout($this->timeout);
 
         try {
