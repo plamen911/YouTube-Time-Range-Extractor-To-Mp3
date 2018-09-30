@@ -22,6 +22,9 @@ class YoutubeTimeRangeExtractorToMp3
     /** @var string|null $videoLink */
     private $videoLink;
 
+    /** @var string|null $format */
+    private $format;
+
     /** @var string|null $directVideoLink */
     private $directVideoLink;
 
@@ -58,6 +61,7 @@ class YoutubeTimeRangeExtractorToMp3
         }
 
         $this->videoLink = $videoLink;
+		$this->format = 22;
         $this->directVideoLink = null;
         $this->videoDuration = -1;
         $this->videoData = [];
@@ -75,9 +79,17 @@ class YoutubeTimeRangeExtractorToMp3
     /**
      * @param null|string $videoLink
      */
-    public function setVideoLink(string $videoLink): null
+    public function setVideoLink(string $videoLink)
     {
         $this->videoLink = $videoLink;
+    }
+
+    /**
+     * @param null|string $format
+     */
+    public function setVideoFormat(string $format)
+    {
+        $this->format = $format;
     }
 
     /**
@@ -96,17 +108,17 @@ class YoutubeTimeRangeExtractorToMp3
         return $this->downloadPath;
     }
 
-    public function debug(callable $debug): null
+    public function debug(callable $debug)
     {
         $this->debug = $debug;
     }
 
-    public function setTimeout(int $timeout): null
+    public function setTimeout(int $timeout)
     {
         $this->timeout = $timeout;
     }
 
-    public function onProgress(callable $onProgress): null
+    public function onProgress(callable $onProgress)
     {
         $this->progress = $onProgress;
     }
@@ -121,10 +133,14 @@ class YoutubeTimeRangeExtractorToMp3
     {
         $this->getVideoData();
 
-        $audioFile = $this->downloadPath . '/' . str_random(40) . '.mp3';
+		if(function_exists("str_random")) {
+			$audioFile = $this->downloadPath . '/' . str_random(40) . '.mp3';
+		} else {
+			$audioFile = $this->downloadPath . '/' . $this->generateRandomString(40) . '.mp3';
+		}
 
-        // ffmpeg -i $(youtube-dl -f 22 --get-url https://www.youtube.com/watch?v=G_4dYKDC5pQ) -ss 10 -to 15 -ac 2 -codec:a libmp3lame -b:a 48k -ar 16000 sample.mp3
-        $process = new Process('ffmpeg -i $(youtube-dl -f 22 --get-url ' . $this->videoLink . ') -ss ' . $startTime . ' -to ' . $endTime . ' -ac 2 -codec:a libmp3lame -b:a 48k -ar 16000 ' . $audioFile);
+        // ffmpeg -i $(youtube-dl -f '.$this->format.' --get-url https://www.youtube.com/watch?v=G_4dYKDC5pQ) -ss 10 -to 15 -ac 2 -codec:a libmp3lame -b:a 48k -ar 16000 sample.mp3
+        $process = new Process('ffmpeg -i $(youtube-dl -f '.$this->format.' --get-url ' . $this->videoLink . ') -ss ' . $startTime . ' -to ' . $endTime . ' -ac 2 -codec:a libmp3lame -b:a 48k -ar 16000 ' . $audioFile);
         $process->setTimeout($this->timeout);
 
         try {
@@ -176,11 +192,11 @@ class YoutubeTimeRangeExtractorToMp3
     public function getVideoData(): array
     {
         if (count($this->videoData) <= 1) {
-            // youtube-dl -f 22 --get-url https://www.youtube.com/watch?v=G_4dYKDC5pQ
+            // youtube-dl -f '.$this->format.' --get-url https://www.youtube.com/watch?v=G_4dYKDC5pQ
             $process = new Process([
                 'youtube-dl',
                 '-f',
-                '22',
+                $this->format,
                 '--get-url',
                 $this->videoLink,
                 '--dump-json'
@@ -219,5 +235,21 @@ class YoutubeTimeRangeExtractorToMp3
         }
 
         return $decoded;
+    }
+	
+    /**
+     * @param $length
+     * @return string
+	 * (snagged from https://stackoverflow.com/questions/4356289/php-random-string-generator)
+     */
+    private function generateRandomString($length = 40): string
+    {
+		$characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		$charactersLength = strlen($characters);
+		$randomString = '';
+		for ($i = 0; $i < $length; $i++) {
+			$randomString .= $characters[rand(0, $charactersLength - 1)];
+		}
+		return $randomString;
     }
 }
